@@ -1,6 +1,6 @@
 # OtakusTech
 
-Desenvolvimento de uma aplicação Web para a disciplina de Projeto em Computação - UFCG.
+Desenvolvimento do backend de uma aplicação Web para a disciplina de Projeto em Computação - UFCG.
 
 ## Nosso time
 
