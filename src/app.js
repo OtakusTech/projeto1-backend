@@ -1,44 +1,33 @@
-const express = require('express');
+// Carregando módulos:
+const express = require("express");
+let handlebars = require('express-handlebars').create({ defaultLayout: 'main' })
+const bodyParser = require("body-parser");
 const app = express();
-const mongodb = require('mongodb');
-require('dotenv').config();
-const ObjectId = mongodb.ObjectId;
+const user_routes = require("./routes/user_routes");
+// Configurações:
+    // BodyParser:
+        app.use(bodyParser.urlencoded({extended: true}));
+        app.use(bodyParser.json());
+    // Handlebars:
+        app.set("view engine", "handlebars");
+// Rotas:
+    app.use("/user_routes", user_routes);
 
-(async () => {
-
- 
-const dbname = process.env.DB_NAME;
-const dbhost = process.env.DB_HOST;
-const dbuser = process.env.DB_USER;
-const dbpassword = process.env.DB_PASSWORD;
-    
-const connectionString = `mongodb+srv://${dbuser}:${dbpassword}@${dbhost}/${dbname}?retryWrites=true&w=majority`;
-const port = process.env.PORT || 3001;
-
-const options = {
-    useUnifiedTopology: true
-};
-
-console.info('Conectando ao banco de dados ...');
-const client = await mongodb.MongoClient.connect(connectionString, options);
-
-
-// exemplos conectando ao banco e recuperando uma collection:
-const db = client.db(dbname);
-const tags = db.collection('tags');
-const animes = db.collection('animes');
-
-
-// exemplo de operações:
-// GET all - async () => await tags.find({}).toArray();
-// GET one - async () => await tags.findOne({_id: ObjectId(id)});
-         
-
-
-app.get('/', (req, res) => {
-    res.send('Teste');
+// Outros:
+const port = 5000;
+app.listen(port, () => {
+    console.log('Back-End iniciado em http://localhost: '+port);
 });
 
+
+
+
+
+
+ /*       
+app.get('/', (req, res) => {
+    res.send('Hello world');
+});
 
 // rota de teste do banco de dados
 app.get('/tags', async (req, res) => {
@@ -50,6 +39,6 @@ app.get('/animes', async (req, res) => {
     res.send(await animes.find({}).toArray());
 });
 
-
 app.listen(port);
 })();
+*/
