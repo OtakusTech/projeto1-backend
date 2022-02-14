@@ -24,6 +24,19 @@ const app = express();
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 var cors = require('cors');
+
+let handlebars = require('express-handlebars').create({ defaultLayout: 'main' })
+const bodyParser = require("body-parser");
+const user_routes = require("./routes/user_routes");
+// Configurações:
+    // BodyParser:
+        app.use(bodyParser.urlencoded({extended: true}));
+        app.use(bodyParser.json());
+    // Handlebars:
+        app.set("view engine", "handlebars");
+// Rotas:
+    app.use("/user_routes", user_routes);
+
  
 //Import routes
 const authRoute = require('./routes/auth');
@@ -36,7 +49,9 @@ app.use(cors());
 mongoose.connect(
     process.env.DB_CONNECT,
     {
-       
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+       // useFindAndModify: false
     },
     () => console.log("Conectou, :D"));
 //Middlewares
