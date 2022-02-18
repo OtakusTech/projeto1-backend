@@ -4,6 +4,7 @@ let handlebars = require('express-handlebars').create({ defaultLayout: 'main' })
 const bodyParser = require("body-parser");
 const app = express();
 const user_routes = require("./routes/user_routes");
+
 // Configurações:
     // BodyParser:
         app.use(bodyParser.urlencoded({extended: true}));
@@ -18,10 +19,6 @@ const port = 5000;
 app.listen(port, () => {
     console.log('Back-End iniciado em http://localhost: '+port);
 });
-
-
-
-
 
 
  /*       
