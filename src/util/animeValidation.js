@@ -1,5 +1,4 @@
 const Joi = require('@hapi/joi');
-const { JsonWebTokenError } = require('jsonwebtoken');
 
 exports.registerValidation = data => {
     const schema = Joi.object({
