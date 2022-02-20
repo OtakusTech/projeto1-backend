@@ -1,7 +1,7 @@
 const Anime = require('../models/Anime');
 
 exports.getAll = async (req, res) => {
-    const animes  = await Anime.find()
+    const animes = await Anime.find()
     if(!animes) {
          return res.status(400).send('No animes found.');
     }
