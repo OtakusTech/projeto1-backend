@@ -32,7 +32,7 @@ exports.registerNewAnime = async (req, res) => {
     });
 
     try{
-        const savedAnime = await newAnime.save(newAnime);
+        const savedAnime = await newAnime.save();
         res.send({anime:newAnime._id});
     }catch(err){
         res.status(400).send(err);
