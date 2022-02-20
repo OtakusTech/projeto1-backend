@@ -1,4 +1,5 @@
 const Anime = require('../models/Anime');
+const {registerValidation} = require('../util/animeValidation');
 
 exports.getAll = async (req, res) => {
     const animes  = await Anime.find()
@@ -18,6 +19,9 @@ exports.getByTitle = async (req, res) => {
 };
 
 exports.registerNewAnime = async (req, res) => {
+    const {error} = registerValidation(req.body);
+    if ( error) return res.status(400).send(error.details[0].message);
+
     const animeExists = await Anime.findOne({title: req.body.title});
     if(animeExists) {
         return res.status(400).send('Anime ja cadastrado');
