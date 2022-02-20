@@ -35,7 +35,9 @@ const animeSchema = new mongoose.Schema({
     user: {
         type: User,
         required: true
-    }
+    },  
+    {collections: 'animes'}
+
 });
  
 module.exports = mongoose.model('Anime', animeSchema);
