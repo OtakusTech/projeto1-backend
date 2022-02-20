@@ -1,41 +1,42 @@
-// Carregando módulos:
-const express = require("express");
-let handlebars = require('express-handlebars').create({ defaultLayout: 'main' })
-const bodyParser = require("body-parser");
+const express = require('express');
 const app = express();
-const user_routes = require("./routes/user_routes");
+const dotenv = require('dotenv');
+var cors = require('cors');
+const bodyParser = require('body-parser');
+const user_route = require('./routes/user');
+const auth_route = require('./routes/auth'); //O erro inicia aqui
+const mongoose = require('mongoose');
 
 // Configurações:
     // BodyParser:
-        app.use(bodyParser.urlencoded({extended: true}));
-        app.use(bodyParser.json());
-    // Handlebars:
-        app.set("view engine", "handlebars");
+    app.use(bodyParser.urlencoded({extended: true}));
+    app.use(bodyParser.json());
 // Rotas:
-    app.use("/user_routes", user_routes);
+    app.use("/user_route", user_route);
+    app.use("/auth_route", auth_route)
+    app.use(cors()); //Faz o que?
 
-// Outros:
-const port = 5000;
-app.listen(port, () => {
-    console.log('Back-End iniciado em http://localhost: '+port);
-});
+// Conectar ao mongoDB:
+dotenv.config();
+app.use(cors());
+ 
+//conecta ao dbzinho
+mongoose.connect(
+    process.env.DB_CONNECT,
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    },
+    () => console.log("Conectado ao BD."));
+// Middlewares
+    app.use(express.json());
+ 
+// Routes Middlewares
 
 
- /*       
-app.get('/', (req, res) => {
-    res.send('Hello world');
-});
+// Conectando a API:
+    const PORT = 5000;
+    app.listen(PORT, () => console.log("API conectada na porta "+ PORT));
 
-// rota de teste do banco de dados
-app.get('/tags', async (req, res) => {
-    res.send(await tags.find({}).toArray());
-});
 
-// rota de teste do banco de dados
-app.get('/animes', async (req, res) => {
-    res.send(await animes.find({}).toArray());
-});
 
-app.listen(port);
-})();
-*/

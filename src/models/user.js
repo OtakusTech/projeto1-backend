@@ -1,40 +1,15 @@
-module.exports =  class User {
-    constructor(name, email, password) {
-        this.name = name;
-        this.email = email;
-        this.password =  password;
+const mongoose = require('mongoose');
 
-    }
+const UserSchema = new mongoose.Schema(
+    {
+        date: {type: Date, default: Date.now},
+        name: {type: String, required: true, min: 6, max: 255},
+        email: {type: String, required: true, max: 255, min: 6},
+        password: {type: String, required: true, max: 1024, min: 6},
+        img: { type: String, required: false, max: 500}
+    },
+    {collection: 'users'}
+);
 
-    createUser(){
-        console.log("hello world");
-    }
-    saveUser(){
-
-    }
-    deleterUser(){
-
-    }
-    updateUser(){
-
-    }
-    set setName(new_name) {
-        this.name = new_name;
-    }
-    get getName() {
-        return this.name;
-    }
-    set setEmail(new_email) {
-        this.email = new_email;
-    }
-    get getEmail() {
-        return this.email;
-    }
-    set setPassword(new_password) {
-        this.password = new_password;
-    }
-    get getEmail() {
-        return this.email;
-    }
-} 
-
+//UserSchema.index({slug: 1, userid:1}, {unique: true});
+module.exports = mongoose.model('User', UserSchema);
