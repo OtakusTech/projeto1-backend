@@ -29,6 +29,7 @@ let handlebars = require('express-handlebars').create({ defaultLayout: 'main' })
 const bodyParser = require("body-parser");
 const user_routes = require("./routes/user_routes");
 const anime_routes = require("./routes/anime_routes");
+const tag_routes = require("./routes/tag_routes");
 // Configurações:
     // BodyParser:
 app.use(bodyParser.urlencoded({extended: true}));
@@ -40,6 +41,8 @@ app.set("view engine", "handlebars");
 app.use("/user_routes", user_routes);
 
 app.use(anime_routes);
+
+app.use(tag_routes);
  
 //Import routes
 const authRoute = require('./routes/auth');
