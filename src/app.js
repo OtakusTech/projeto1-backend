@@ -5,6 +5,7 @@ var cors = require('cors');
 const bodyParser = require('body-parser');
 const user_route = require('./routes/user');
 const auth_route = require('./routes/auth'); //O erro inicia aqui
+const anime_route = require('./routes/anime_routes')
 const mongoose = require('mongoose');
 
 // Configurações:
@@ -14,6 +15,7 @@ const mongoose = require('mongoose');
 // Rotas:
     app.use("/user_route", user_route);
     app.use("/auth_route", auth_route)
+    app.use("/animes_routes", anime_route)
     app.use(cors()); //Faz o que?
 
 // Conectar ao mongoDB:

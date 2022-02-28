@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const InvalidToken = require('../models/invalidToken');
+const InvalidToken = require('../models/InvalidToken');
  
 module.exports = async function (req, res, next){
     const authHeader = req.headers.authorization;
