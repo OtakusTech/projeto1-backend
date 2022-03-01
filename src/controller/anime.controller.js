@@ -1,5 +1,8 @@
 const Anime = require('../models/Anime');
 const {registerValidation} = require('../util/animeValidation');
+const animeService = require('../services/anime.service');
+const tagService = require('../services/tag.service');
+const tagController = require('../controller/tag.controller')
 
 exports.getAll = async (req, res) => {
     const animes = await Anime.find()
@@ -56,3 +59,39 @@ exports.deleteAnime = async (req, res) => {
         res.send(error);
     }
 };
+
+/**exports.addAnimetag = async (req, res) => {
+    const myTag = tagService.getTag(red.body.tag)
+    const myAnime = animeService.getById(req.body.animeId)
+    if(myTag){
+        //o que fazer caso a tag exista
+        //verificar se a tag já está no anime
+    }else{
+        //caso a tag não exista
+        const tagCreated = tagService.createTag(req.body.tag)
+        
+    }
+}**/
+
+exports.addAnimetag = async (req, res) => {
+
+    const meuResult = animeService.addAnimeTag(req.body.animeid, req.body.tagid, req.body.userid)
+    if(meuResult){
+        const meuAnime = await Anime.findById(req.body.animeid)
+        console.log(meuAnime)
+        res.send({'sucess':true, 'object':meuAnime})
+    }else{
+        res.send("err")
+    }
+}
+
+exports.removeAnimetag = async (req, res) => {
+    const meuResult = animeService.removeAnimetag(req.body.animeid, req.body.tagid)
+    if(meuResult){
+        const meuAnime = await Anime.findById(req.body.animeid)
+        console.log(meuAnime)
+        res.send({'sucess':true, 'object':meuAnime})
+    }else{
+        res.send("err")
+    }
+}

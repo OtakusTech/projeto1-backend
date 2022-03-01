@@ -8,7 +8,8 @@ exports.registerValidation = data => {
         synopsis: Joi.object().keys({
             text: Joi.string().max(500).required(),
             font: Joi.string().required()
-        })
+        }),
+        tags: Joi.array()
     });
 
     return schema.validate(data);
