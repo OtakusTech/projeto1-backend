@@ -10,7 +10,7 @@ router.delete('/animes/:title', animeController.deleteAnime);
 
 router.post('/animes', animeController.registerNewAnime);
 
-router.put('/animetag', animeController.addAnimetag);
+router.put('/animetag', animeController.createAndAddAnimetag);
 
 router.delete('/animetag', animeController.removeAnimetag);
 

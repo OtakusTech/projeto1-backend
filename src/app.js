@@ -37,7 +37,7 @@ mongoose.connect(
 
 
 // Conectando a API:
-    const PORT = 5000;
+    const PORT = 5006;
     app.listen(PORT, () => console.log("API conectada na porta "+ PORT));
 
 

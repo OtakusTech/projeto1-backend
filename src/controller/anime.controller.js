@@ -4,6 +4,7 @@ const animeService = require('../services/anime.service');
 const tagService = require('../services/tag.service');
 const tagController = require('../controller/tag.controller')
 
+
 exports.getAll = async (req, res) => {
     const animes = await Anime.find()
     if(!animes) {
@@ -71,6 +72,13 @@ exports.deleteAnime = async (req, res) => {
         const tagCreated = tagService.createTag(req.body.tag)
         
     }
+
+    //tag não existe no bd, nem no anime
+
+    //tag existe no bd, mas não existe no anime
+        -> isso que a gente fez
+    //tag já existe no anime e não foi votada pelo user
+    //tag já existe no anime e já foi votada pelo user
 }**/
 
 exports.addAnimetag = async (req, res) => {
@@ -85,11 +93,45 @@ exports.addAnimetag = async (req, res) => {
     }
 }
 
+exports.createAndAddAnimetag = async (req, res) => {
+    const myTag = await tagService.getTag(req.body.tagName)
+    console.log(">>>>> MY TAG TA AKI: "+myTag)
+    let savedTag = null
+
+    //se a tag não existe
+    if(myTag == null){
+        //crio a tag no bd
+        savedTag = await tagService.createTag(req.body.tagName)
+        if(savedTag == null){
+            res.send({"sucess":false})
+        }
+        const savedTagId = savedTag._id
+        //adiciono a tag no anime & o voto do usuário na tag
+        const meuResult = animeService.addAnimeTag(req.body.animeid, savedTagId, req.body.userid)
+
+        if(meuResult){
+            const meuAnime = await Anime.findById(req.body.animeid)
+            console.log(meuAnime)
+            res.send({'sucess':true, 'object':meuAnime})
+        }else{
+            res.send("err")
+        }
+    }else{
+        //se a tag existe, verifica se o anome tem a tag
+        const animeConstainsTag = animeService.animeContainsTag(req.body.animeid, myTag._id)
+        if(animeConstainsTag){
+            animeService.addUserVoteToAnimeTag(req.body.animeid, myTag._id, req.body.userid)
+        }else{
+            animeService.addAnimeTag(req.body.animeid, myTag._id, req.body.userid)
+        }
+    }
+}
+
 exports.removeAnimetag = async (req, res) => {
     const meuResult = animeService.removeAnimetag(req.body.animeid, req.body.tagid)
     if(meuResult){
         const meuAnime = await Anime.findById(req.body.animeid)
-        console.log(meuAnime)
+        //console.log(meuAnime)
         res.send({'sucess':true, 'object':meuAnime})
     }else{
         res.send("err")

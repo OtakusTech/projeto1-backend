@@ -1,7 +1,7 @@
 const Tag = require('../models/Tag');
 
 exports.getTag = async (tagName) => {
-    const myTag = await Tag.findById({tag:tagName});
+    const myTag = await Tag.findOne({'tag':tagName});
     if(myTag){
         return myTag
     }else{
@@ -17,8 +17,8 @@ exports.createTag = async (tagName) => {
 
     try{
         const savedTag = await newTag.save();
-        return true
+        return savedTag;
     }catch(err){
-        return false
+        return null;
     }
 }
