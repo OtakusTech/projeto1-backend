@@ -12,9 +12,8 @@ exports.getAll = async (req, res) => {
     res.send(animes);
 };
 
-exports.getByTitle = async (req, res) => {
-    // const animeId = req.params.title;
-    const animeExists = await Anime.findOne({title: req.params.title}); 
+exports.getById = async (req, res) => {
+    const animeExists = await Anime.findById(req.params.id); 
     if(!animeExists) {
         return res.status(400).send('Anime não encontrado');
     }
@@ -47,18 +46,33 @@ exports.registerNewAnime = async (req, res) => {
 };
 
 exports.deleteAnime = async (req, res) => {
-    const animeExists = await Anime.findOne({title: req.params.title});
+    const animeExists = await Anime.findOne({id: req.params.id});
     if(!animeExists){
         return res.status(400).send('Anime não encontrado');
     }
     try{
-        await Anime.deleteOne({title: req.params.title});
+        await Anime.deleteOne({id: req.params.id});
         res.send('Anime deletado com sucesso.')
 
     }catch(error){
         res.send(error);
     }
 };
+
+exports.updateAnime = async (req, res) => {
+    const { id } = req.params;
+    const animeExists = await Anime.findOne({id});
+    if (!animeExists) {
+        return res.status(500).send('Anime não encontrado');
+    }
+    try {
+        await Anime.findByIdAndUpdate(id, req.body);
+        res.send('Anime atualizado com sucesso.')
+
+    } catch (error){
+        res.send(error);
+    }
+}
 
 /**exports.addAnimetag = async (req, res) => {
     const myTag = tagService.getTag(red.body.tag)
@@ -78,7 +92,6 @@ exports.addAnimetag = async (req, res) => {
     const meuResult = animeService.addAnimeTag(req.body.animeid, req.body.tagid, req.body.userid)
     if(meuResult){
         const meuAnime = await Anime.findById(req.body.animeid)
-        console.log(meuAnime)
         res.send({'sucess':true, 'object':meuAnime})
     }else{
         res.send("err")
@@ -89,7 +102,6 @@ exports.removeAnimetag = async (req, res) => {
     const meuResult = animeService.removeAnimetag(req.body.animeid, req.body.tagid)
     if(meuResult){
         const meuAnime = await Anime.findById(req.body.animeid)
-        console.log(meuAnime)
         res.send({'sucess':true, 'object':meuAnime})
     }else{
         res.send("err")

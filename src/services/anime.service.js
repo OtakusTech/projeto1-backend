@@ -1,7 +1,7 @@
 
 const Anime = require('../models/Anime');
+
 exports.getById = async (animeId) => {
-    // const animeId = req.params.title;
     const animeExists = await Anime.findOne({'_id':animeId}); 
     if(!animeExists) {
         return null
@@ -13,7 +13,6 @@ exports.addAnimeTag = async (animeId, tagId, userId)=> {
 
     try{
         let meuAnime = await Anime.findById(animeId)
-        console.log(meuAnime)
         meuAnime.tags.push({'tagId': tagId, folks: [userId] })
         await Anime.findByIdAndUpdate({'_id':animeId}, {'tags': meuAnime.tags} )
         return true;
