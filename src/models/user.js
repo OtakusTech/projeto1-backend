@@ -27,6 +27,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: false,
         max: 500
+    },
+    bio: {
+        type: String,
+        required: false,
+        max: 500
     }
 });
  

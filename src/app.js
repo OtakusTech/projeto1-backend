@@ -1,44 +1,32 @@
 const express = require('express');
-const app = express();
 const dotenv = require('dotenv');
-var cors = require('cors');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const user_route = require('./routes/user');
 const auth_route = require('./routes/auth'); //O erro inicia aqui
 const anime_route = require('./routes/anime_routes')
 const mongoose = require('mongoose');
 
-// Configurações:
-    // BodyParser:
-    app.use(bodyParser.urlencoded({extended: true}));
-    app.use(bodyParser.json());
-// Rotas:
-    app.use("/user_route", user_route);
-    app.use("/auth_route", auth_route)
-    app.use("/animes_routes", anime_route)
-    app.use(cors()); //Faz o que?
+const app = express();
 
-// Conectar ao mongoDB:
 dotenv.config();
+app.use(express.json());
 app.use(cors());
- 
-//conecta ao dbzinho
+app.use(bodyParser.urlencoded({extended: true, limit: '50mb'}));
+app.use(bodyParser.json({extended: true, limit: '50mb'}));
+
+app.use("/user", user_route);
+app.use(auth_route);
+app.use("/anime", anime_route);
+
+
 mongoose.connect(
     process.env.DB_CONNECT,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     },
-    () => console.log("Conectado ao BD."));
-// Middlewares
-    app.use(express.json());
- 
-// Routes Middlewares
+    () => console.log("Conectado ao BD.")
+);
 
-
-// Conectando a API:
-    const PORT = 5006;
-    app.listen(PORT, () => console.log("API conectada na porta "+ PORT));
-
-
-
+module.exports = app;
