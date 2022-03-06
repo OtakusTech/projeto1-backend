@@ -1,17 +1,26 @@
-
 const Anime = require('../models/Anime');
-exports.getById = async (animeId) => {
-    // const animeId = req.params.title;
 
+exports.getAnimeById = async (req, res) => {
+    // const animeId = req.params.title;
+    const animeId = req.body.animeId;
     try{
-        animeExists = await Anime.findOne({'_id':animeId})
-        if(!animeExists) {
-            return null
-        }
-        return animeExists
-    }catch(e){
-        console.log(e)
-        return null
+        animeOrNull = await Anime.findOne({'_id':animeId})
+        res.send(animeOrNull);
+        // return animeOrNull;
+    }catch(error) {
+        throw error;
+    }
+    
+};
+
+exports.getAnimeByName = async (req, res) => {
+    // const animeId = req.params.title;
+    const animeName = req.body.animeName;
+    try{
+        animeOrNull = await Anime.findOne({'titulo':animeName})
+        return animeOrNull;
+    }catch(error) {
+        throw error;
     }
     
 };
