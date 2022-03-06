@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
 const animeSchema = new mongoose.Schema(
@@ -28,7 +29,15 @@ const animeSchema = new mongoose.Schema(
             }
         },
         tags: {
-            type: [String],
+            type: [{
+                tagId: {
+                    type: ObjectId,
+                    required: true,
+                },
+                folks: {
+                    type: [ObjectId]
+                }
+            }],
             required: false,
         },
         img: {

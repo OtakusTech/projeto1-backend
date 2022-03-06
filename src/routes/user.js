@@ -2,14 +2,16 @@ const express = require("express");
 const router = express.Router();
 const createUser = require("../controller/user");
 const User = require("../models/user")
-const {registerValidation} = require('../validation');
+const {registerValidation} = require('../util/validation');
 const bcrypt = require('bcryptjs');
+const userController = require('./../controller/user');
 
-router.get("/get_user", (req, res) => {
-    //res.send(user);
-});
 
-router.post("/create_user", async (req, res) => {
+router.get("/get", userController.getAll);
+
+router.get("/get/:id", userController.getById);
+
+router.post("/register", async (req, res) => {
     data = req.body;
     // Validando os dados recebidos:
     const {error} = registerValidation(data);
@@ -32,5 +34,7 @@ router.post("/create_user", async (req, res) => {
         res.status(400).send(err);
     }
 });
+
+router.put("/update/:id", userController.update);
 
 module.exports = router // É preciso exportar o router para fora;
