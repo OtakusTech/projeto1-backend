@@ -5,8 +5,7 @@ const router = express.Router();
 
 
 const animeService = require('../services/anime.service');
-router.get('/animetag', animeService.getAnimeById);
-
+router.put('/animetag', animeService.addAnimeTag);
 
 
 router.get('/animes', animeController.getAll);

@@ -1,23 +1,8 @@
 const Anime = require('../models/Anime');
 
-exports.getAnimeById = async (req, res) => {
-    // const animeId = req.params.title;
-    const animeId = req.body.animeId;
+exports.getAnimeById = async (animeId) => {
     try{
-        animeOrNull = await Anime.findOne({'_id':animeId})
-        res.send(animeOrNull);
-        // return animeOrNull;
-    }catch(error) {
-        throw error;
-    }
-    
-};
-
-exports.getAnimeByName = async (req, res) => {
-    // const animeId = req.params.title;
-    const animeName = req.body.animeName;
-    try{
-        animeOrNull = await Anime.findOne({'titulo':animeName})
+        animeOrNull = await Anime.findOne({'_id': animeId})
         return animeOrNull;
     }catch(error) {
         throw error;
@@ -25,23 +10,23 @@ exports.getAnimeByName = async (req, res) => {
     
 };
 
-exports.addAnimeTag = async (animeId, tagId, userId)=> {
 
+exports.addAnimeTag = async (animeId, tagId, userId)=> {
     try{
-        let meuAnime = await Anime.findById(animeId)
-        meuAnime.tags.push({'tagId': tagId, folks: [userId] })
-        await Anime.findByIdAndUpdate({'_id':animeId}, {'tags': meuAnime.tags} )
-        return true;
-    }catch(err){
-        console.log(err)
-        return false;
+        const anime = await this.getAnimeById(animeId);
+        anime.tags.push({'tagId': tagId, folks: [userId] })
+        const { modifiedCount } = await Anime.updateOne({'_id': animeId}, {$set: {'tags': anime.tags}} )
+        if(modifiedCount === 0) return null;
+        const savedAnime = await this.getAnimeById(animeId); 
+        return savedAnime;
+    }catch(error){
+        throw error
     }
 };
 
 exports.addUserVoteToAnimeTag = async (animeId, tagId, userId) =>{
     try{
-        let meuAnime = await Anime.findById(animeId)
-        console.log(meuAnime)
+        let meuAnime = await Anime.findById(animeId);
         meuAnime.tags.find(e => e.tagId == tagId).folks.push(userId)
         await Anime.findByIdAndUpdate({'_id':animeId}, {'tags': meuAnime.tags} )
         return true;
@@ -52,23 +37,12 @@ exports.addUserVoteToAnimeTag = async (animeId, tagId, userId) =>{
     }
 }
 
-exports.animeContainsTag = async (animeid, tagid) =>{
-
-        let meuAnime = Anime.findOne({'_id':animeid})
-        if(!meuAnime.tags){
-            return false
-        }
-
-        if(meuAnime != null){
-            
-            console.log("auwauhewuaheuaeuaaaaaeuh")
-            const searchResult = meuAnime.tags.findIndex(e => e.tagId == tagid)
-            console.log(">>>>>>> SEARCH RESULT: "+searchResult)
-            if(searchResult != -1){
-                return true
-            }
-        }
-        return false
+exports.animeContainsTag = async (animeId, tagId) =>{
+    const anime = await Anime.findOne({'_id':animeId, 'tags.tagId': tagId});
+    if(anime.length === 0) {
+        return false;
+    }
+    return true;    
 }
 
 exports.removeAnimetag = async (animeId, tagId) =>{
