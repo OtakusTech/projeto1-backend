@@ -4,8 +4,8 @@ const router = express.Router();
 
 
 
-const animeService = require('../services/anime.service');
-router.put('/animetag', animeService.addAnimeTag);
+// const animeService = require('../services/anime.service');
+// router.put('/animetag', animeService.addUserVoteToAnimeTag);
 
 
 router.get('/animes', animeController.getAll);

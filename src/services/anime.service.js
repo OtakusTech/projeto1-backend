@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const Anime = require('../models/Anime');
 
 exports.getAnimeById = async (animeId) => {
@@ -26,43 +27,50 @@ exports.addAnimeTag = async (animeId, tagId, userId)=> {
 
 exports.addUserVoteToAnimeTag = async (animeId, tagId, userId) =>{
     try{
-        let meuAnime = await Anime.findById(animeId);
-        meuAnime.tags.find(e => e.tagId == tagId).folks.push(userId)
-        await Anime.findByIdAndUpdate({'_id':animeId}, {'tags': meuAnime.tags} )
-        return true;
-        //a
-    }catch(err){
-        console.log(err)
-        return false;
+        const anime = await Anime.findById(animeId);
+        if(!anime) return null;
+        
+        const tag = anime.tags.find(e => `${e.tagId}` === tagId)
+        if(!tag) res.send("eee"); 
+        
+        if(tag.folks.includes(userId)) return null;
+        
+        tag.folks.push(userId)
+        const { modifiedCount } = await Anime.updateOne({'_id': animeId}, {$set: {'tags': anime.tags}} )
+        if(modifiedCount === 0) return null;
+        
+        const savedAnime = await this.getAnimeById(animeId); 
+        return savedAnime;
+    }catch(error){
+        throw error;
     }
 }
 
 exports.animeContainsTag = async (animeId, tagId) =>{
     const anime = await Anime.findOne({'_id':animeId, 'tags.tagId': tagId});
-    if(anime.length === 0) {
+    if(anime === null) {
         return false;
     }
     return true;    
 }
 
-exports.removeAnimetag = async (animeId, tagId) =>{
-
+exports.removeAnimeTag = async (animeId, tagId) =>{    
     try{
-        let meuAnime = await Anime.findById(animeId)
-
-        for(let i = 0; i < meuAnime.tags.length; i++){
-            if (meuAnime.tags[i].tagId == tagId){
-                console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-                meuAnime.tags.splice(i,1);
-                break;
-            }
-        }
-
-        await Anime.findByIdAndUpdate({'_id':animeId}, {'tags': meuAnime.tags} )
-        return true;
-    }catch(err){
-        console.log(err)
-        return false;
-    }
+        const anime = await Anime.findById(animeId)
+        if(!anime) return null;
+        
+        const index = await anime.tags.findIndex(e => `${e.tagId}` === tagId); 
+        if(index === -1) return null;
+        
+        anime.tags.splice(index,1);
+        
+        const { modifiedCount } = await Anime.updateOne({'_id': animeId}, {$set: {'tags': anime.tags}} )
+        if(modifiedCount === 0) return null;
+        
+        const savedAnime = await this.getAnimeById(animeId); 
+        return savedAnime;
+    }catch(error){
+        throw error;
+    } 
 
 };
