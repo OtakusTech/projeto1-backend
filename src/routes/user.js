@@ -26,7 +26,7 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(data.password, salt);
     
     // Criando o objeto usuário e salvando no BD:
-    const user = createUser(data.name, data.email, hashedPassword, data.img);
+    const user = createUser(data.name, data.email, hashedPassword, '');
     try{
         const savedUser = await user.save();
         res.send("Usuário "+ savedUser.name+" cadastrado.");
