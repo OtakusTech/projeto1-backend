@@ -1,5 +1,6 @@
 const Tag = require('../models/Tag');
 
+
 exports.getAll = async (req, res, next) => {
     const tags = await Tag.find();
     if (!tags) {

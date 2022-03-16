@@ -20,6 +20,19 @@ exports.getById = async (req, res) => {
     res.send(animeExists);
 };
 
+exports.getByTag = async (req,res) => {
+    const tagName = req.params.name;
+    const tagId = tagService.getTagId(tagName);
+
+    //const animesExist = Anime.find({"tags.tagId": tagId});
+    const animesExist = Anime.find().all("tags.tagId",[tagId]);
+    if(!animesExist) {
+        return res.status(400).send('Nenhum anime não encontrado com esta tag');
+    }
+    
+    res.status(200).send("Anime encontrado");
+};
+
 exports.registerNewAnime = async (req, res) => {
     const {error} = registerValidation(req.body);
     if ( error) return res.status(400).send(error.details[0].message);

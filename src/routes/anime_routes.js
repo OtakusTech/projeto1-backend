@@ -6,6 +6,8 @@ router.get('/all', animeController.getAll);
 
 router.get('/:id', animeController.getById);
 
+router.get('/getAnimeByTag/:name',animeController.getByTag)
+
 router.delete('/delete/:id', animeController.deleteAnime);
 
 router.post('/new', animeController.registerNewAnime);
