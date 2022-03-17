@@ -95,48 +95,58 @@ exports.updateAnime = async (req, res) => {
     //tag já existe no anime e já foi votada pelo user
 }**/
 
-exports.addAnimetag = async (req, res) => {
+exports.addTagAndVote = async (req, res) => {
+    try {
+        const tagId = req.body.tagId;
+        const animeId = req.body.animeId;
+        const userId = req.body.userId;
 
-    const meuResult = animeService.addAnimeTag(req.body.animeid, req.body.tagid, req.body.userid)
-    if(meuResult){
-        const meuAnime = await Anime.findById(req.body.animeid)
-        res.send({'sucess':true, 'object':meuAnime})
-    }else{
-        res.send("err")
+        const constainsTag = await animeService.animeContainsTag(animeId, tagId);
+        
+        let savedAnime;
+        if(constainsTag){
+            savedAnime = await animeService.addUserVoteToAnimeTag(animeId, tagId, userId)
+        }else{
+            savedAnime = await animeService.addAnimeTag(animeId, tag._id, userId);
+        }
+        res.status(200).send(savedAnime);
+    } catch (error) {
+        res.status(500).send(`${error}`);
     }
 }
 
-exports.createAndAddAnimetag = async (req, res) => {
-    const myTag = await tagService.getTag(req.body.tagName)
-    console.log(">>>>> MY TAG TA AKI: "+myTag)
-    let savedTag = null
+exports.createOrAddAnimeTagAndVote = async (req, res) => {
+    try {
+        const tagName = req.body.tagName;
+        const animeId = req.body.animeId;
+        const userId = req.body.userId;
 
-    //se a tag não existe
-    if(myTag == null){
-        //crio a tag no bd
-        savedTag = await tagService.createTag(req.body.tagName)
-        if(savedTag == null){
-            res.send({"sucess":false})
-        }
-        const savedTagId = savedTag._id
-        //adiciono a tag no anime & o voto do usuário na tag
-        const meuResult = animeService.addAnimeTag(req.body.animeid, savedTagId, req.body.userid)
+        const tag = await tagService.getTagByName(tagName);
+        
+        //se a tag não existe
+        if(!tag){
+            // cria a tag no bd
+            const savedTag = await tagService.createTag(tagName);
+            
+            // adiciona a tag ao anime e o voto do usuario a tag
+            const savedAnime = await animeService.addAnimeTag(animeId, savedTag._id, userId);
+            res.status(200).send(savedAnime);
+        } else{
+            //se a tag existe
 
-        if(meuResult){
-            const meuAnime = await Anime.findById(req.body.animeid)
-            console.log(meuAnime)
-            res.send({'sucess':true, 'object':meuAnime})
-        }else{
-            res.send("err")
+            // verifica se o anime contém a tag
+            const constainsTag = await animeService.animeContainsTag(animeId, tag._id);
+            
+            let savedAnime;
+            if(constainsTag){
+                savedAnime = await animeService.addUserVoteToAnimeTag(animeId, tag._id, userId)
+            }else{
+                savedAnime = await animeService.addAnimeTag(animeId, tag._id, userId);
+            }
+            res.status(200).send(savedAnime);
         }
-    }else{
-        //se a tag existe, verifica se o anome tem a tag
-        const animeConstainsTag = animeService.animeContainsTag(req.body.animeid, myTag._id)
-        if(animeConstainsTag){
-            animeService.addUserVoteToAnimeTag(req.body.animeid, myTag._id, req.body.userid)
-        }else{
-            animeService.addAnimeTag(req.body.animeid, myTag._id, req.body.userid)
-        }
+    } catch (error) {
+        res.status(500).send(`${error}`);
     }
 }
 

@@ -29,14 +29,14 @@ exports.getAllTags = async () => {
 
 exports.createTag = async (tagName) => {
     try{
-        const tag = this.getTagByName(tagName);
-        if(tag) return null; // quando a tag já existe
+        const tag = await this.getTagByName(tagName);
+        if(tag) throw new Error("Tag já cadastrada no sistema");
 
         const newTag = new Tag({
             tag: tagName
         }); 
 
-        const savedTag = await newTag.save();
+        const savedTag = await newTag.save();   
         return savedTag;
     }catch(error){
         throw error;
