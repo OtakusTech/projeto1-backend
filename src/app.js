@@ -28,8 +28,6 @@ app.use(auth_route);
 app.use("/anime", anime_route);
 
 
-
- 
 mongoose.connect(
     process.env.DB_CONNECT,
     {

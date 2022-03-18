@@ -2,7 +2,7 @@ const Anime = require('../models/Anime');
 const {registerValidation} = require('../util/animeValidation');
 const animeService = require('../services/anime.service');
 const tagService = require('../services/tag.service');
-const tagController = require('../controller/tag.controller')
+
 
 exports.getAll = async (req, res) => {
     const animes = await Anime.find()
@@ -74,36 +74,66 @@ exports.updateAnime = async (req, res) => {
     }
 }
 
-/**exports.addAnimetag = async (req, res) => {
-    const myTag = tagService.getTag(red.body.tag)
-    const myAnime = animeService.getById(req.body.animeId)
-    if(myTag){
-        //o que fazer caso a tag exista
-        //verificar se a tag já está no anime
-    }else{
-        //caso a tag não exista
-        const tagCreated = tagService.createTag(req.body.tag)
+exports.addTagAndVote = async (req, res) => {
+    try {
+        const tagId = req.body.tagId;
+        const animeId = req.body.animeId;
+        const userId = req.body.userId;
+
+        const constainsTag = await animeService.animeContainsTag(animeId, tagId);
         
+        let savedAnime;
+        if(constainsTag){
+            savedAnime = await animeService.addUserVoteToAnimeTag(animeId, tagId, userId)
+        }else{
+            savedAnime = await animeService.addAnimeTag(animeId, tagId, userId);
+        }
+        res.status(200).send(savedAnime);
+    } catch (error) {
+        res.status(500).send(`${error}`);
     }
-}**/
+}
 
-exports.addAnimetag = async (req, res) => {
+exports.createOrAddAnimeTagAndVote = async (req, res) => {
+    try {
+        const tagName = req.body.tagName;
+        const animeId = req.body.animeId;
+        const userId = req.body.userId;
 
-    const meuResult = animeService.addAnimeTag(req.body.animeid, req.body.tagid, req.body.userid)
-    if(meuResult){
-        const meuAnime = await Anime.findById(req.body.animeid)
-        res.send({'sucess':true, 'object':meuAnime})
-    }else{
-        res.send("err")
+        const tag = await tagService.getTagByName(tagName);
+        
+        //se a tag não existe
+        if(!tag){
+            // cria a tag no bd
+            const savedTag = await tagService.createTag(tagName);
+            
+            // adiciona a tag ao anime e o voto do usuario a tag
+            const savedAnime = await animeService.addAnimeTag(animeId, savedTag._id, userId);
+            res.status(200).send(savedAnime);
+        } else{
+            //se a tag existe
+
+            // verifica se o anime contém a tag
+            const constainsTag = await animeService.animeContainsTag(animeId, tag._id);
+            
+            let savedAnime;
+            if(constainsTag){
+                savedAnime = await animeService.addUserVoteToAnimeTag(animeId, tag._id, userId)
+            }else{
+                savedAnime = await animeService.addAnimeTag(animeId, tag._id, userId);
+            }
+            res.status(200).send(savedAnime);
+        }
+    } catch (error) {
+        res.status(500).send(`${error}`);
     }
 }
 
 exports.removeAnimetag = async (req, res) => {
-    const meuResult = animeService.removeAnimetag(req.body.animeid, req.body.tagid)
-    if(meuResult){
-        const meuAnime = await Anime.findById(req.body.animeid)
-        res.send({'sucess':true, 'object':meuAnime})
-    }else{
-        res.send("err")
+    try {
+        const savedAnime = await animeService.removeAnimeTag(req.body.animeId, req.body.tagId);
+        res.status(200).send(savedAnime)
+    } catch (error) {
+        res.status(500).send(`${error}`);
     }
 }

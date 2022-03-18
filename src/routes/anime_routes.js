@@ -2,6 +2,14 @@ const express = require('express');
 const animeController = require('../controller/anime.controller');
 const router = express.Router();
 
+
+
+router.post('/animetag', animeController.createOrAddAnimeTagAndVote); 
+
+router.put('/animetag/vote', animeController.addTagAndVote);
+
+
+router.get('/animes', animeController.getAll);
 router.get('/all', animeController.getAll);
 
 router.get('/:id', animeController.getById);
@@ -12,8 +20,6 @@ router.post('/new', animeController.registerNewAnime);
 
 router.put('/update/:id', animeController.updateAnime);
 
-router.put('/animetag', animeController.addAnimetag);
-
-router.delete('/animetag', animeController.removeAnimetag);
+// router.delete('/animetag', animeController.removeAnimetag);
 
 module.exports = router;
