@@ -2,7 +2,6 @@ const Anime = require('../models/Anime');
 const {registerValidation} = require('../util/animeValidation');
 const animeService = require('../services/anime.service');
 const tagService = require('../services/tag.service');
-const tagController = require('../controller/tag.controller')
 
 
 exports.getAll = async (req, res) => {
@@ -75,26 +74,6 @@ exports.updateAnime = async (req, res) => {
     }
 }
 
-/**exports.addAnimetag = async (req, res) => {
-    const myTag = tagService.getTag(red.body.tag)
-    const myAnime = animeService.getById(req.body.animeId)
-    if(myTag){
-        //o que fazer caso a tag exista
-        //verificar se a tag já está no anime
-    }else{
-        //caso a tag não exista
-        const tagCreated = tagService.createTag(req.body.tag)
-        
-    }
-
-    //tag não existe no bd, nem no anime
-
-    //tag existe no bd, mas não existe no anime
-        -> isso que a gente fez
-    //tag já existe no anime e não foi votada pelo user
-    //tag já existe no anime e já foi votada pelo user
-}**/
-
 exports.addTagAndVote = async (req, res) => {
     try {
         const tagId = req.body.tagId;
@@ -107,7 +86,7 @@ exports.addTagAndVote = async (req, res) => {
         if(constainsTag){
             savedAnime = await animeService.addUserVoteToAnimeTag(animeId, tagId, userId)
         }else{
-            savedAnime = await animeService.addAnimeTag(animeId, tag._id, userId);
+            savedAnime = await animeService.addAnimeTag(animeId, tagId, userId);
         }
         res.status(200).send(savedAnime);
     } catch (error) {
@@ -151,11 +130,10 @@ exports.createOrAddAnimeTagAndVote = async (req, res) => {
 }
 
 exports.removeAnimetag = async (req, res) => {
-    const meuResult = animeService.removeAnimetag(req.body.animeid, req.body.tagid)
-    if(meuResult){
-        const meuAnime = await Anime.findById(req.body.animeid)
-        res.send({'sucess':true, 'object':meuAnime})
-    }else{
-        res.send("err")
+    try {
+        const savedAnime = await animeService.removeAnimeTag(req.body.animeId, req.body.tagId);
+        res.status(200).send(savedAnime)
+    } catch (error) {
+        res.status(500).send(`${error}`);
     }
 }

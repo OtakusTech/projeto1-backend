@@ -67,7 +67,7 @@ exports.removeAnimeTag = async (animeId, tagId) =>{
         if(!anime) throw new Error("Anime não cadastrado");
         
         const index = await anime.tags.findIndex(e => `${e.tagId}` === tagId); 
-        if(index === -1) throw new Error("Tag não cadastrada"); 
+        if(index === -1) throw new Error("Tag não pertence ao anime"); 
         
         anime.tags.splice(index,1);
         
