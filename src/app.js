@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const user_route = require('./routes/user');
 const auth_route = require('./routes/auth'); //O erro inicia aqui
 const anime_route = require('./routes/anime_routes')
+const tag_routes = require('./routes/tag_routes');
 const mongoose = require('mongoose');
 
 const app = express();
@@ -26,6 +27,7 @@ app.use(bodyParser.json({extended: true, limit: '50mb'}));
 app.use("/user", user_route);
 app.use(auth_route);
 app.use("/anime", anime_route);
+app.use(tag_routes);
 
 
 mongoose.connect(

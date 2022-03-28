@@ -34,6 +34,10 @@ const animeSchema = new mongoose.Schema(
                     type: ObjectId,
                     required: true,
                 },
+                name: {
+                    type: String,
+                    required: true,
+                },
                 folks: {
                     type: [ObjectId]
                 }

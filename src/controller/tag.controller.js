@@ -11,7 +11,7 @@ exports.getAll = async (req, res, next) => {
 exports.createTag = async (req, res) => {
     const tagExists = await Tag.findOne({tag: req.body.tag});
     if (tagExists) {
-        return res.status(400).send('Tag ja cadastrada.');
+        res.send({ name: tagExists.tag, tagId: tagExists._id});
     }
     const newTag = new Tag({
         tag: req.body.tag
@@ -19,8 +19,8 @@ exports.createTag = async (req, res) => {
 
     try{
         const savedTag = await newTag.save();
-        res.send({tag: newTag._id});
+        res.send({name: savedTag.tag, tagId: savedTag._id});
     }catch(err){
-        res.status(400).send(err);
+        res.status(500).send(err);
     }
 }
