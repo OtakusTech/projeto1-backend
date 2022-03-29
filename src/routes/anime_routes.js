@@ -8,9 +8,9 @@ router.post('/animetag', animeController.createOrAddAnimeTagAndVote);
 
 router.put('/animetag/vote', animeController.addTagAndVote);
 
-
-router.get('/animes', animeController.getAll);
 router.get('/all', animeController.getAll);
+
+router.get('/all/:tagId', animeController.getAnimesWithTag);
 
 router.get('/:id', animeController.getById);
 

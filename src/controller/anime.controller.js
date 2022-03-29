@@ -2,7 +2,8 @@ const Anime = require('../models/Anime');
 const {registerValidation} = require('../util/animeValidation');
 const animeService = require('../services/anime.service');
 const tagService = require('../services/tag.service');
-
+const tagController = require('../controller/tag.controller')
+const {ObjectId} = require('mongodb');
 
 exports.getAll = async (req, res) => {
     const animes = await Anime.find()
@@ -18,6 +19,24 @@ exports.getById = async (req, res) => {
         return res.status(400).send('Anime não encontrado');
     }
     res.send(animeExists);
+};
+
+exports.getAnimesWithTag = async (req, res) => {
+    try{
+        const tagId = req.params.tagId;
+        const tag = await tagService.getTagById(tagId);
+        if (!tag) {
+            return res.status(204).send([]);
+        }
+        const animesWithTag = await Anime.find({"tags.tagId": tagId});
+    
+        if (!animesWithTag) {
+            return res.status(204).send([]);
+        }
+        res.status(200).send(animesWithTag);
+    }catch (error) {
+        res.status(500).send(`${error}`);
+    }
 };
 
 exports.registerNewAnime = async (req, res) => {
@@ -93,6 +112,7 @@ exports.addTagAndVote = async (req, res) => {
         res.status(500).send(`${error}`);
     }
 }
+
 
 exports.createOrAddAnimeTagAndVote = async (req, res) => {
     try {
