@@ -22,7 +22,7 @@ exports.getAll = async (req, res) => {
 };
 
 exports.getById = async (req, res) => {
-    const userExists = await user.findOne({id: req.params.id}); 
+    const userExists = await user.findOne({_id: req.params.id}); 
     if(!userExists) {
         return res.status(500).send('User not found');
     }
@@ -30,7 +30,7 @@ exports.getById = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
-    const query = { id: req.params.id };
+    const query = { _id: req.params.id };
     const userExists = await user.findOne(query); 
     if(!userExists) {
         return res.status(500).send('User not found');
