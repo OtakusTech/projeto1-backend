@@ -53,7 +53,8 @@ exports.registerNewAnime = async (req, res) => {
         year: req.body.year,
         synopsis: req.body.synopsis,
         tags: req.body.tags,
-        img: req.body.img
+        img: req.body.img,
+        user: req.body.user
     });
 
     try{

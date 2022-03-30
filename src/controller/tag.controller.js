@@ -12,15 +12,16 @@ exports.createTag = async (req, res) => {
     const tagExists = await Tag.findOne({tag: req.body.tag});
     if (tagExists) {
         res.send({ name: tagExists.tag, tagId: tagExists._id});
-    }
-    const newTag = new Tag({
-        tag: req.body.tag
-    });
-
-    try{
-        const savedTag = await newTag.save();
-        res.send({name: savedTag.tag, tagId: savedTag._id});
-    }catch(err){
-        res.status(500).send(err);
+    } else {
+        const newTag = new Tag({
+            tag: req.body.tag
+        });
+    
+        try{
+            const savedTag = await newTag.save();
+            res.send({name: savedTag.tag, tagId: savedTag._id});
+        }catch(err){
+            res.status(500).send(err);
+        }
     }
 }

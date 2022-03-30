@@ -17,6 +17,11 @@ const animeSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        user: {
+            type: String,
+            required: true,
+            max: 255
+        },
         synopsis: {
             text: {
                 type: String,
