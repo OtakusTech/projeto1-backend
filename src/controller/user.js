@@ -35,7 +35,7 @@ exports.update = async (req, res) => {
     if(!userExists) {
         return res.status(500).send('User not found');
     }
-    const userResult = await user.findByIdAndUpdate(query.id, req.body);
+    const userResult = await user.findByIdAndUpdate(query, {$set:req.body});
     res.send({ userResult });
 
 }
