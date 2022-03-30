@@ -21,7 +21,7 @@ const animeSchema = new mongoose.Schema(
             text: {
                 type: String,
                 required: true,
-                max: 500
+                max: 1000
             },
             font: {
                 type: String,

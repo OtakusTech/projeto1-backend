@@ -6,11 +6,12 @@ exports.registerValidation = data => {
         creator: Joi.string().max(255).required(),
         year: Joi.string().required(),
         synopsis: Joi.object().keys({
-            text: Joi.string().max(500).required(),
+            text: Joi.string().max(1000).required(),
             font: Joi.string().required()
         }),
-        tags: Joi.array()
+        tags: Joi.array(),
+        img: Joi.string()
     });
 
-    return schema.validate(data);
+    return schema.validate(data); 
 };
