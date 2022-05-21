@@ -13,6 +13,48 @@ exports.getAll = async (req, res) => {
     res.send(animes);
 };
 
+exports.getRecommendation = async (req, res) =>{
+    const tagId = req.params.tagId;
+    const qtd = req.params.qtd;
+
+    try{
+        const tag = await tagService.getTagById(tagId);
+        console.log(tag)
+
+        if (!tag) {
+            console.log("encontrou aki em :D")
+            return res.status(404).send({
+                "ok":false,
+                "animes":[],
+                 "error":null
+            });
+        }
+
+        const animesWithTag = await Anime.find({"tags.tagId": tagId});
+        if (!animesWithTag) {
+            return res.status(204).send({
+                "ok":false,
+                "animes":[],
+                "error":null,
+            });
+        } 
+
+        res.status(200).send({
+            "ok":true,
+            "animes":animesWithTag.slice(0,qtd),
+            "error":null,
+        });
+
+    }catch(e){
+        res.status(500).send({
+            "ok":false,
+            "animes":[],
+            "error":e
+        })
+    }
+
+}
+
 exports.getById = async (req, res) => {
     const animeExists = await Anime.findById(req.params.id); 
     if(!animeExists) {
